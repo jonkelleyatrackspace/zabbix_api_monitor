@@ -1,0 +1,34 @@
+config:
+  loglevel: Exception
+  identity_providers:
+    basicAuthExampleProvider:
+        HTTPBasicAuth:
+            username: ''
+            password: ''
+    googleauthExampleProvider:
+        oauthv1:
+            oauthv1-application-key: ''
+            oauthv1-application-secret: ''
+            oauthv1-oauth_token: ''
+            oauthv1-token_secet: ''
+  zabbix:
+    host: localhost
+    port: 6697
+    item_key_format: "url_monitor[{datatype}, {metricname}, {uri}]"
+testSet:
+-  "jobStatsTotals"
+    uri: https://api.net/1.1/jobTotals
+    response_type: json
+    identity_provider: basicAuthExampleProvider
+    ok_http_code: 200
+    testElements:
+      - key: Job.success
+        jsonvalue: ./jobSuccess
+        datatype: counter,string
+        metricname: jobSuccess
+        unit_of_measure: "events"
+      - key: Job.failure
+        jsonvalue: ./jobFailure
+        datatype: counter
+        metricname: jobFailure
+        unit_of_measure: "events"
