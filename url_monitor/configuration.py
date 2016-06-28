@@ -123,25 +123,60 @@ class ConfigObject(object):
         """ Trys loading all the config objects for zabbix conf. This can be expanded to do
             all syntax checking in this config class, instead of in the program logic as it is
             mostly right now. """
+
+        # Ensure base config elements exist.
         try:
             self.config['config']
-            self.config['config']['zabbix']['host']
-            self.config['config']['zabbix']['port']
         except KeyError, err:
-            print("Error: Missing zabbix: " + str(err) + " structure in config under config.")
-            print("You need that to configure your zabbix destination host for metrics")
-            print("1")
+            error = "\n\nError: Config missing zabbix: " + str(err) + " structure in config under config\n" \
+            + "Ensure \n  " + str(err) + ":  is defined\n1"
+            raise Exception("KeyError: " + str(err) + str(error))
             exit(1)
+
         try:
+            self.config['config']['zabbix']
+        except KeyError, err:
+            error = "\n\nError: Config missing: " + str(err) + " structure in config under config\n" \
+            + "Ensure \n  config:\n     " + str(err) + ":  is defined\n1"
+            raise Exception("KeyError: " + str(err) + str(error))
+            exit(1)
+
+        try:
+            self.config['config']['zabbix']['port']
+            self.config['config']['zabbix']['host']
             self.config['config']['zabbix']['item_key_format']
         except KeyError, err:
-            print("Error: Missing zabbix: " + str(err) + " structure in config under config.")
-            print("This is a string template that maps to the item name you see in Zabbix")
-            print("It takes {macros} you can reference from testElements, as well as builtins")
-            print(" called {datatype}, {uri}")
-            print(str(err) + ": url_monitor[{datatype}, {metricname}, {uri}] is a good start")
-            print("1")
+            error = "\n\nError: Config missing: " + str(err) + " structure in config under config\n" \
+            + "Ensure \n  config:\n     zabbix:\n        " + str(err) + ":  is defined\n1"
+            raise Exception("KeyError: " + str(err) + str(error))
             exit(1)
+
+        # Ensure identity items exist
+        try:
+            self.config['config']['identity_providers']
+        except KeyError, err:
+            error = "\n\nError: Config missing: " + str(err) + " structure in config under config\n" \
+            + "Ensure \n  config:\n     " + str(err) + ":  is defined\n1"
+            raise Exception("KeyError: " + str(err) + str(error))
+            exit(1)
+
+
+        try:
+            for provider in self._loadConfigIdentityProviders():
+                provider
+        except AttributeError, err:
+            error = "\n\nError: Config missing: " + str(err) + " structure in config: identity_providers\n" \
+            + "Ensure \n  identity_providers follows documentation\n1"
+            raise Exception("AttributeError: " + str(err) + str(error))
+            exit(1)
+
+        for provider in self._loadConfigIdentityProviders():
+            provider
+            for module, kwargs in self.config['config']['identity_providers'][provider].iteritems():
+                module.split('/')
+                for kwarg in kwargs:
+                    kwarg
+
 
     def _loadTestSetList(self):
         """ Used to prepare format of data for the checker functions
