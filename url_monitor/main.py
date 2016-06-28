@@ -120,9 +120,10 @@ def discover(args,configinstance,logger):
     config = configinstance.load()
 
     if not args.datatype:
-        logging.error("\nYou must provide a datatype with the --datatype or -t option.\n\n" +
-              "Datatypes are found in your yaml config under\n testSet->testTitle-" +
-              ">testElements->datatype \n\nAvailable types in config:\n  %s " % discover_helper(configinstance))
+        logging.error("\nYou must provide a datatype with the --datatype or -t option.\n\n" \
+              + "Datatypes are found in your yaml config under\n testSet->testTitle-" \
+              + ">testElements->datatype \n\nAvailable types detected in config:" \
+              + "\n  %s " % configinstance.getDatatypesList())
         sys.exit(1)
 
     discoveryDict = {}
@@ -153,44 +154,6 @@ def discover(args,configinstance,logger):
                     discoveryDict['data'].append(element)
     # Print discovery dict.
     print(json.dumps(discoveryDict, indent=3))
-
-
-def uniq(seq):
-    """ Returns a unique list when a list of
-     non unique items are put in """
-    set = {}
-    map(set.__setitem__, seq, [])
-    return set.keys()
-
-
-def discover_helper(configinstance):
-    """ Quick helper function for discover() that will fetch known datatypes from the config. """
-    config = configinstance.load()
-    possible_datatypes = []
-    for testSet in config['checks']:
-        checkname = testSet['key']
-        try:
-            uri = testSet['data']['uri']
-        except KeyError, err:
-            error = "\n\nError: Missing " + str(err) + " under testSet item "+ str(testSet['key']) +", discover cannot run.\n1"
-            raise Exception("KeyError: " + str(err) + str(error))
-
-        try:
-            testSet['data']['testElements']
-        except KeyError, err:
-            error = "\n\nError: Missing " + str(err) + " under testSet item "+ str(testSet['key']) +", discover cannot run.\n1"
-            raise Exception("KeyError: " + str(err) + str(error))
-
-        for element in testSet['data']['testElements']:  # For every test element
-            try:
-                datatypes = element['datatype'].split(',')
-            except KeyError, err:
-                error = "\n\nError: Missing " + str(err) + " under testElements in "+ str(testSet['key']) +", discover cannot run.\n1"
-                raise Exception("KeyError: " + str(err) + str(error))
-            for datatype in datatypes:
-                possible_datatypes.append(datatype)
-
-    return str(uniq(possible_datatypes))
 
 def entry_point():
     """Zero-argument entry point for use with setuptools/distribute."""

@@ -63,6 +63,40 @@ class ConfigObject(object):
 
         """ Loads a list of the checks """
 
+    def _uniq(self,seq):
+        """ Returns a unique list when a list of
+         non unique items are put in """
+        set = {}
+        map(set.__setitem__, seq, [])
+        return set.keys()
+
+    def getDatatypesList(self):
+        """ Used by the discover command to identify a list of valid datatypes """
+        possible_datatypes = []
+        for testSet in self._loadChecks():
+            checkname = testSet['key']
+            try:
+                uri = testSet['data']['uri']
+            except KeyError, err:
+                error = "\n\nError: Missing " + str(err) + " under testSet item "+ str(testSet['key']) +", discover cannot run.\n1"
+                raise Exception("KeyError: " + str(err) + str(error))
+
+            try:
+                testSet['data']['testElements']
+            except KeyError, err:
+                error = "\n\nError: Missing " + str(err) + " under testSet item "+ str(testSet['key']) +", discover cannot run.\n1"
+                raise Exception("KeyError: " + str(err) + str(error))
+
+            for element in testSet['data']['testElements']:  # For every test element
+                try:
+                    datatypes = element['datatype'].split(',')
+                except KeyError, err:
+                    error = "\n\nError: Missing " + str(err) + " under testElements in "+ str(testSet['key']) +", discover cannot run.\n1"
+                    raise Exception("KeyError: " + str(err) + str(error))
+                for datatype in datatypes:
+                    possible_datatypes.append(datatype)
+
+        return str(self._uniq(possible_datatypes))
     def get_log_level(self,debug_level=None):
         """ Allow user-configurable log-leveling """
         try:
@@ -149,3 +183,4 @@ if __name__ == "__main__":
     x.load_yaml_file(config=None)
     a = x._loadChecks()
     print(a)
+    print(x.getDatatypeList())
