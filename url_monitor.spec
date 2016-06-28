@@ -7,25 +7,19 @@ Group:          Applications/Systems
 Summary:        This is an external script for zabbix for monitoring restful endpoints for data.
 
 License:        ASLv2
-URL:            https://github.rackspace.com/cloud-integration-ops/url_monitor
+URL:            %(%{__python} -c "import url_monitor.packaging as namespace; print(namespace.url)")
 Source0:        %{name}-%{version}.tar.gz
 
 BuildArch:      noarch
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  python-setuptools
 Requires(pre):  shadow-utils
-Requires:       python
-Requires:       python-daemon
-Requires:       python-setuptools
-Requires:       python-requests
-Requires:       python-requests-oauthlib
-Requires:       python-argparse
-Requires:       PyYAML
+Requires:        %(%{__python} -c "import sys; import url_monitor.packaging as namespace; x = lambda x: sys.stdout.write(\" \".join(x) + \"\"); sys.stdout.write(\"Requires: \"); str(x(namespace.rpm_requires))")
 
 %define service_name %{name}d
 
 %description
-This is an external script for zabbix for monitoring restful endpoints for data.
+%(%{__python} -c "import url_monitor.packaging as namespace; print(namespace.long_description)")
 
 %prep
 %setup -q -n %{name}-%{version}

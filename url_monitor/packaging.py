@@ -36,6 +36,14 @@ install_requires    = ['python-daemon',
                           'PyYAML',
                           'importlib'
                         ]
+rpm_requires    = ['python',
+                   'python-daemon',
+                   'python-setuptools',
+                   'python-requests',
+                   'python-requests-oauthlib',
+                   'python-argparse',
+                   'PyYAML'
+                        ]
 software_classified = [
                         'Intended Audience :: System Administrators',
                         'License :: OSI Approved :: Apache Software License',
