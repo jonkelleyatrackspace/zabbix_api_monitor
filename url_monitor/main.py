@@ -228,36 +228,21 @@ def main(arguements=None):
     logger = logging.getLogger(metadata.package)
     args.loglevel = configinstance.get_log_level(args.loglevel)
     logging.basicConfig(level=args.loglevel)
-    if (args.COMMAND == "check" and args.key is not None):
-        exit_val = 0
-        for testSet in config['checks']:
-            # Run only check defined by --key
-            if testSet['key'] == args.key:
-                exit_val = check(testSet,configinstance,logger)
-
-                if exit_val == 0:
-                    print("0")
-                    sys.exit(0)
-                else:
-                    logging.critical("Check " + testSet['key'] + " failed to run")
-                    print("1")
-                    sys.exit(1)
-
-
-    elif args.COMMAND == "check":
-        # Just run all checks.
+    if args.COMMAND == "check":
         failed_exits = []
         for testSet in config['checks']:
-            exit_val = check(testSet,configinstance,logger)
-            if exit_val != 0:
-                failed_exits.append(testSet['key'])
+            if args.key != None:
+                if testSet['key'] == args.key:
+                    exit_val = check(testSet,configinstance,logger)
+                    if exit_val != 0:
+                        failed_exits.append(testSet['key'])
+            else:
+                exit_val = check(testSet,configinstance,logger)
+
+                if exit_val != 0:
+                    failed_exits.append(testSet['key'])
         if len(failed_exits) > 0:
-            logging.critical(str(failed_exits) + " checkaliases failed to run")
-            print("1")
-            sys.exit(1)
-        else:
-            print("0")
-            sys.exit(0)
+            raise Exception(str(len(failed_exits)) + " checks have failed: " + str(failed_exits) + "\n1")
     elif args.COMMAND == "discover":
         discover(args,configinstance,logger)
 
