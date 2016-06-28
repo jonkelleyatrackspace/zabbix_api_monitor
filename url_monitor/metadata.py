@@ -21,4 +21,4 @@ emails = ['jon.kelley@rackspace.com',
 license = 'ASLv2'
 company = "Rackspace, Inc."
 copyright = '2016 ' + company
-url = 'https://github.com/jonkelleyatrackspace/zabbix_url_monitor'
+url = 'https://github.com/rackerlabs/zabbix_url_monitor'
