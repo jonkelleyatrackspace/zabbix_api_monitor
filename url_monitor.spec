@@ -1,7 +1,7 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           url_monitor
-Version:        %(%{__python} -c "import url_monitor.metadata as namespace; print(namespace.version)")
+Version:        %(%{__python} -c "import url_monitor.packaging as namespace; print(namespace.version)")
 Release:        1%{?dist}
 Group:          Applications/Systems
 Summary:        This is an external script for zabbix for monitoring restful endpoints for data.

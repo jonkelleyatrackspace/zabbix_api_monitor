@@ -7,7 +7,7 @@ from setuptools import setup
 import sys
 sys.path.insert(0, '.')
 
-from url_monitor.metadata import version, authors, emails, license, url
+from url_monitor.packaging import version, authors, emails, license, url
 
 NAME = "url_monitor"
 SHORT_DESC = "A tool used to monitor api endpoint data in zabbix"

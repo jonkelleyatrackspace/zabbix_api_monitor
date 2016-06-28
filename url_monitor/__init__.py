@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import metadata
+import packaging
 
-__version__ = metadata.version
-__author__ = metadata.authors[0]
-__license__ = metadata.license
-__copyright__ = metadata.copyright
+__version__ = packaging.version
+__author__ = packaging.authors[0]
+__license__ = packaging.license
+__copyright__ = packaging.copyright
