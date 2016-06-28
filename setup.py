@@ -7,15 +7,12 @@ from setuptools import setup
 import sys
 sys.path.insert(0, '.')
 
-from url_monitor.packaging import version, authors, emails, license, url
-
-NAME = "url_monitor"
-SHORT_DESC = "A tool used to monitor api endpoint data in zabbix"
-
+from url_monitor.packaging import version, authors, emails, license, install_requires
+from url_monitor.packaging import long_desc, description, package, url, software_classified
 
 if __name__ == "__main__":
     setup(
-        name=NAME,
+        name=package,
         version=version,
         author=authors,
         author_email=emails,
@@ -23,28 +20,12 @@ if __name__ == "__main__":
         license=license,
         packages=[NAME],
         package_dir={NAME: NAME},
-        description=SHORT_DESC,
-        classifiers=[
-            'Intended Audience :: System Administrators',
-            'License :: OSI Approved :: Apache Software License',
-            'Natural Language :: English',
-            'Operating System :: OS Independent',
-            'Programming Language :: Python',
-            'Programming Language :: Python :: 2',
-            'Programming Language :: Python :: 3',
-            'Topic :: System :: Monitoring',
-            'Topic :: System :: Networking :: Monitoring',
-            'Topic :: System :: Systems Administration ',
-        ],
+        description=description,
+        long_description=long_desc,
+        classifiers=software_classified
         entry_points={
             'console_scripts': ['url_monitor = url_monitor.main:main'],
         },
         data_files=[('/etc', ['url_monitor.yaml'])],
-        install_requires=['python-daemon',
-                          'requests',
-                          'requests-oauthlib',
-                          'oauthlib',
-                          'argparse',
-                          'PyYAML',
-                          'importlib']
+        install_requires=install_requires
     )

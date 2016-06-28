@@ -22,12 +22,7 @@ def returnEpilog():
     for name, email in zip(packaging.authors, packaging.emails):
         author_strings.append('Author: {0} <{1}>'.format(name, email))
 
-    help_descr = "A Zabbix plugin written in Python that creates low level discovery items containing " \
-        + "values from your JSON API. It supports multiple requests auth backends including " \
-        + "oauth, basicauth, and your even own custom requests auth provider plugins. The low" \
-        + " level discovery items can generate item prototypes which can be used to represent" \
-        + " your data through this plugin."
-    help_descr = textwrap.fill(help_descr, 72, replace_whitespace=True)
+    help_descr = textwrap.fill(packaging.long_description, 72, replace_whitespace=True)
     return """{project} {version}\n{headerline}\n{description}\n{footerline}\n{authors}\nURL: <{url}>""".format(
         headerline=str('=' * len(packaging.version + packaging.project + ' ')),
         footerline=str('-' * 72),
