@@ -4,7 +4,7 @@ from __future__ import print_function
 import argparse
 import sys
 import packaging
-import toolset
+import commons
 import json
 import configuration
 from configuration import ConfigObject
@@ -40,7 +40,7 @@ def returnEpilog():
 def check(testSet,configinstance,logger):
     """ Perform the checks when called upon by argparse in main() """
     config = configinstance.load()
-    webinstance = toolset.WebCaller(logger)
+    webinstance = commons.WebCaller(logger)
 
     # Make a request and check a resource
     try:
@@ -75,7 +75,7 @@ def check(testSet,configinstance,logger):
         # (string,int,count)
         for datatype in datatypes:
             try:
-                path = toolset.omnipath(response.content, testSet[
+                path = commons.omnipath(response.content, testSet[
                     'data']['response_type'], element)
             except KeyError, err:
                 # We're missing one of these two keys aren't we?
