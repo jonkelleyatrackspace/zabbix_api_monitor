@@ -7,7 +7,6 @@ import packaging
 import commons
 import json
 import configuration
-from configuration import ConfigObject
 import zbxsend as event
 from zbxsend import Metric
 import logging
@@ -216,7 +215,7 @@ def main(arguements=None):
            + " warn, critical, error, exceptions]")
     args = arg_parser.parse_args(args=arguements)
 
-    configinstance = ConfigObject()
+    configinstance = configuration.ConfigObject()
     configinstance.load_yaml_file(args.config)
     configinstance.preFlight()
     config = configinstance.load()
