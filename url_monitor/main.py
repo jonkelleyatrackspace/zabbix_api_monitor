@@ -1,8 +1,6 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""Program entry point"""
-
 from __future__ import print_function
-
 import argparse
 import sys
 import metadata
@@ -15,6 +13,8 @@ from zbxsend import Metric
 import logging
 import textwrap
 import requests
+
+__doc__ = """Program entry point"""
 
 def returnEpilog():
     author_strings = []

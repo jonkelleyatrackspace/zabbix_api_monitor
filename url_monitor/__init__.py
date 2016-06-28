@@ -1,8 +1,6 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""It does cool things"""
-
 import metadata
-
 
 __version__ = metadata.version
 __author__ = metadata.authors[0]

@@ -1,5 +1,6 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""url_monitor
+__doc__ = """url_monitor
 
 Extensible URL monitor that iterates through supplied json/yaml
 files to pull remote data from fields in http, xml, or json
