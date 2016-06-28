@@ -32,6 +32,10 @@ class WebCaller(object):
     """ Performs web functions for API's we're running check"s on """
 
     def __init__(self, logging):
+        """ Initialize web instance.
+        Bring logging instance in.
+        Set session.auth and session_headers to none by default
+        """
         logging = logging
         self.session = None
         self.session_headers = None

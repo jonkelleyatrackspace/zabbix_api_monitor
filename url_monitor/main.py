@@ -21,6 +21,7 @@ def returnEpilog():
     author_strings = []
     for name, email in zip(metadata.authors, metadata.emails):
         author_strings.append('Author: {0} <{1}>'.format(name, email))
+
     help_descr = "A Zabbix plugin written in Python that creates low level discovery items containing " \
         + "values from your JSON API. It supports multiple requests auth backends including " \
         + "oauth, basicauth, and your even own custom requests auth provider plugins. The low" \
@@ -37,7 +38,7 @@ def returnEpilog():
         url=metadata.url)
 
 def check(testSet,configinstance,logger):
-    """ Perform the checks when called upon by argparse """
+    """ Perform the checks when called upon by argparse in main() """
     config = configinstance.load()
     configinstance.load_zabbix()
     webinstance = toolset.WebCaller(logger)
@@ -117,7 +118,7 @@ def check(testSet,configinstance,logger):
     return 0
 
 def discover(args,configinstance,logger):
-    """ Perform the discovery when called upon by argparse """
+    """ Perform the discovery when called upon by argparse in main()"""
     configinstance.load_yaml_file(args.config)
     config = configinstance.load()
 
@@ -162,6 +163,14 @@ def entry_point():
     raise SystemExit(main(sys.argv))
 
 def main(arguements=None):
+    """Program entry point.
+
+    :param argv: command-line arguments
+    :type argv: :class:`list`
+
+    python url_monitor/main.py -c "customerAdminAPI_collectionStatusJobTotals" -k "jobSuccess"
+    
+    """
     try:
         if arguements is None:  # __name__=__main__
             arguements = sys.argv[1:]
@@ -174,14 +183,6 @@ def main(arguements=None):
         logging.error("Invalid options. Use --help for more information.")
         sys.exit(1)
 
-    """Program entry point.
-
-    :param argv: command-line arguments
-    :type argv: :class:`list`
-
-    python url_monitor/main.py -c "customerAdminAPI_collectionStatusJobTotals" -k "jobSuccess"
-    
-    """
     arg_parser = argparse.ArgumentParser(
         prog=progname,
         formatter_class=argparse.RawDescriptionHelpFormatter,
