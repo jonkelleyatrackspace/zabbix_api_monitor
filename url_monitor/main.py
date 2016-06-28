@@ -229,17 +229,36 @@ def main(arguements=None):
         epilog=returnEpilog())
     arg_parser.add_argument('COMMAND')
     arg_parser.add_argument(
-        '-V', '--version',
+        "-V",
+        "--version",
         action='version',
         version='{0} {1}'.format(metadata.project, metadata.version))
     arg_parser.add_argument(
-        "--key", "-k", nargs='?', default=None, help="Optional with `check` command. Can be used to run checks on a limited subset of item headings under testSet from the yaml config.")
+        "--key",
+        "-k",
+        nargs='?',
+        default=None,
+        help="Optional with `check` command. Can be used to run checks on a limited" \
+            + " subset of item headings under testSet from the yaml config."
+    )
     arg_parser.add_argument(
-        "--datatype", "-t", nargs='?', default=None, help="Required with `discover` command. This filters objects from the config that have a particular datatype. This data is used by low level discovery in Zabbix.")
-    arg_parser.add_argument("-c", "--config",
-                            help="Specify custom config file, system default /etc/url_monitor.yaml", default=None)
-    arg_parser.add_argument("--loglevel",
-                            help="Specify custom loglevel override. Available options [debug, info, warn, critical, error, exceptions]", default=None)
+        "--datatype",
+        "-t",
+        nargs='?',
+        default=None,
+        help="Required with `discover` command. This filters objects from the config " \
+           + "that have a particular datatype. This data is used by low level discovery" \
+           + " in Zabbix.")
+    arg_parser.add_argument(
+        "-c",
+        "--config",
+        default=None,
+        help="Specify custom config file, system default /etc/url_monitor.yaml")
+    arg_parser.add_argument(
+        "--loglevel",
+        default=None,
+        help="Specify custom loglevel override. Available options [debug, info," \
+           + " warn, critical, error, exceptions]")
     args = arg_parser.parse_args(args=arguements)
 
     configinstance = ConfigObject()
