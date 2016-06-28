@@ -12,7 +12,7 @@ Rackspace Cloud Monitoring, collectd, etc...
 package = 'url_monitor'
 project = "URL Monitor Module"
 project_no_spaces = project.replace(' ', '')
-version = '0.8.5'
+version = '0.8.7'
 description = 'A zabbix plugin to perform URL endpoint monitoring for JSON and XML REST APIs, supporting multiple http auth mechinisms'
 authors = ['Jon Kelley', 'Nick Bales']
 authors_string = ', '.join(authors)
