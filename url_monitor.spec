@@ -14,7 +14,7 @@ BuildArch:      noarch
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  python-setuptools
 Requires(pre):  shadow-utils
-Requires:        %(%{__python} -c "import sys; import url_monitor.packaging as namespace; x = lambda x: sys.stdout.write(\" \".join(x) + \"\"); sys.stdout.write(\"Requires: \"); str(x(namespace.rpm_requires))")
+%(%{__python} -c "import sys; import url_monitor.packaging as namespace; x = lambda x: sys.stdout.write(\" \".join(x) + \"\"); sys.stdout.write(\"Requires: \"); str(x(namespace.rpm_requires))")
 
 %define service_name %{name}d
 

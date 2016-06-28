@@ -8,7 +8,7 @@ import sys
 sys.path.insert(0, '.')
 
 from url_monitor.packaging import version, authors, emails, license, install_requires
-from url_monitor.packaging import long_desc, description, package, url, software_classified
+from url_monitor.packaging import long_description, description, package, url, software_classified
 
 if __name__ == "__main__":
     setup(
@@ -18,11 +18,11 @@ if __name__ == "__main__":
         author_email=emails,
         url=url,
         license=license,
-        packages=[NAME],
-        package_dir={NAME: NAME},
+        packages=[package],
+        package_dir={package: package},
         description=description,
-        long_description=long_desc,
-        classifiers=software_classified
+        long_description=long_description,
+        classifiers=software_classified,
         entry_points={
             'console_scripts': ['url_monitor = url_monitor.main:main'],
         },

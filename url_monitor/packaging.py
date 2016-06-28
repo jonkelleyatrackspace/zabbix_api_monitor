@@ -39,6 +39,7 @@ install_requires    = ['python-daemon',
 rpm_requires    = ['python',
                    'python-daemon',
                    'python-setuptools',
+                   'python-importlib', #cent 6.5
                    'python-requests',
                    'python-requests-oauthlib',
                    'python-argparse',
