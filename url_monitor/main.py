@@ -56,7 +56,7 @@ def check(testSet,configinstance,logger):
     except KeyError, err:
         # We're missing ok code arent we?
         error = "\n\nError: Missing " + str(err) + " under testSet item "+ str(testSet['key']) + "\n" \
-            + "If you don't know `ok_http_code: 200,201,202,203,204,205,206,301,302,304` will cover most services.\n1"
+            + "If you don't know `ok_http_code: any` will cover most services.\n1"
         raise Exception("KeyError: " + str(err) + str(error))
     except requests.exceptions.RequestException as e:
         logging.error("Error: Requests exception " + str(e))
