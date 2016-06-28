@@ -24,18 +24,44 @@ class ConfigObject(object):
 
     def load(self):
         """ This is the main config load function to pull in
-            configuration in the main program """
-        return {'checks': self._load_check_list(), 'config': self.config['config'], 'identity_providers': self._load_identity_providers()}
+            configurations to convienent and common namespace. """
+        return {'checks':             self._loadChecks(),
+                'config':             self._loadConfig(),
+                'identity_providers': self._loadConfigIdentityProviders()}
 
-    def _load_identity_providers(self):
-        """ This fetches out a list of identity providers based on the key of the config alias. """
+    def _loadChecks(self,withIdentityProvider=None):
+        """ Loads the checks for work to be run.
+            Default loads all checks, withIdentityProvider option will limit checks
+            returned by identity provider (useful for smart async request grouping)  """
+        loaded_checks      = []
+
+        if withIdentityProvider:
+            # Useful if doing grouping async requests with a shared identityprovider
+            #  and then spawning async call
+            for checkdata in self._loadTestSetList():
+                if checkdata['data']['identity_provider'].lower() == withIdentityProvider.lower():
+                    #loaded_checks.append({'data': checkdata['data']})
+                    loaded_checks.append(checkdata)
+
+        else:
+            loaded_checks = self._loadTestSetList()
+
+        return loaded_checks
+
+    def _loadConfig(self):
+        """ Return base config key """
+        return self.config['config']
+
+    def _loadConfigIdentityProviders(self):
+        """ This fetches out a list of identity providers kwarg configs from main config """
         providers = {}
-        for provider_config_alias, v in self.config['config']['identity_providers'].iteritems():
+        for provider_config_alias, v in self._loadConfig()['identity_providers'].iteritems():
             # Add each provider and config to dictionary from yaml file.
             providers[provider_config_alias] = v
         # Return a list of the config 
-        # or as well as a covnient provider_list  [x for x in providers]
         return providers
+
+        """ Loads a list of the checks """
 
     def get_log_level(self,debug_level=None):
         """ Allow user-configurable log-leveling """
@@ -60,7 +86,9 @@ class ConfigObject(object):
             return logging.ERROR
 
     def load_zabbix(self):
-        """ Trys loading all the config objects for zabbix conf. """
+        """ Trys loading all the config objects for zabbix conf. This can be expanded to do
+            all syntax checking in this config class, instead of in the program logic as it is
+            mostly right now. """
         try:
             self.config['config']
             self.config['config']['zabbix']['host']
@@ -81,7 +109,7 @@ class ConfigObject(object):
             print("1")
             exit(1)
 
-    def _load_check_list(self):
+    def _loadTestSetList(self):
         """ Used to prepare format of data for the checker functions
         out of the configuration file.
         Here is a sample of return output.
@@ -109,7 +137,6 @@ class ConfigObject(object):
             "response_type": "json",
             "url": "https://x.net/dependencies"
         }]"""
-
         self.checks = []
         for testSet in self.config['testSet']:
             for key, v in testSet.iteritems():
@@ -119,5 +146,6 @@ class ConfigObject(object):
 
 if __name__ == "__main__":
     x = ConfigObject()
-    a = x.load_check_list()
+    x.load_yaml_file(config=None)
+    a = x._loadChecks()
     print(a)

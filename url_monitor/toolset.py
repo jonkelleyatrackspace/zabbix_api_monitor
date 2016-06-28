@@ -9,6 +9,7 @@ from requests.auth import HTTPDigestAuth
 from requests_oauthlib import OAuth1
 import importlib
 
+
 def omnipath(data_object, type, element, throw_error_or_mark_none='none'):
     """ Used to pull path expressions out of json or java path. """
     value = None
@@ -44,14 +45,16 @@ class WebCaller(object):
         try:
             identity_provider = identity_providers[identity_provider]
             auth_kwargs = identity_provider.values()[0]
-        except KeyError:
-            identity_provider = None
+        except KeyError, err:
+            error = "\n\n" + str(err) + " defined in testSet as identity_provider but is undeclared in identity_providers!\n1"
+            raise Exception("KeyError: " + str(err) + str(error))
 
-        # If provider is none, we get TypeError
+
+        # If provider is undefined, we get TypeError
         try:
-            provider_name = [x for x in identity_provider][0]
+            provider_name = str([x for x in identity_provider][0]).lower()
         except TypeError:
-            provider_name = None
+            provider_name = "none"
 
         self.session = requests.Session()
         self.session_headers = {
@@ -59,13 +62,13 @@ class WebCaller(object):
             'accept': 'application/json',
             'user-agent': 'python/url_monitor v' + metadata.version + ' (A zabbix monitoring plugin)'
         }
-        if str(provider_name).lower() == "none":
+        if provider_name == "none":
             self.session.auth = None
-        elif provider_name == "HTTPBasicAuth":
+        elif provider_name == "httpbasicauth":
             self.session.auth = HTTPBasicAuth(**auth_kwargs)
-        elif provider_name == "HTTPDigestAuth":
+        elif provider_name == "httpdigestauth":
             self.session.auth = HTTPDigestAuth(**auth_kwargs)
-        elif provider_name == "OAuth1":
+        elif provider_name == "oauth1":
             self.session.auth = OAuth1(**auth_kwargs)
         else:
             # We must assume we want to load in the format of
@@ -75,28 +78,23 @@ class WebCaller(object):
                 module_strname = [ x for x in identity_provider][0].split('/')[0]
                 class_strname = [ x for x in identity_provider][0].split('/')[1]
             except IndexError, err:
-                print("Exception: " + str(err))
-                print("`" + str(provider_name) + "` is incomplete missing '/' char to seperate Module_Name from Class_Name")
-                print("1")
-                exit(1)
+                error = "\n\n`" + str(provider_name) + "` is incomplete missing '/' char to seperate Module_Name from Class_Name\n1"
+                raise Exception("IndexError: " + str(err) + str(error))
 
             # Try to import the specified module
             try:
                 _module = __import__(module_strname)
             except ImportError, err:
-                print("Exception: " + str(err))
-                print(str(module_strname) + "." + str(class_strname) + " might be an invalid module name at " +  str(module_strname))
-                print("1")
-                exit(1)
+                error = "\n\n" + str(module_strname) + "/" + str(class_strname) + " might be an invalid module/class pairing at " +  str(module_strname) + "\n1"
+                raise Exception("ImportError: " + str(err) + str(error))
 
             # And try to reference a class instance
             try:
                 external_requests_auth_class = getattr(_module, class_strname)
             except AttributeError, err:
-                print("Exception: " + str(err))
-                print(str(module_strname) + "." + str(class_strname) + " might be an invalid class name at " +  str(class_strname))
-                print("1")
-                exit(1)
+                error = "\n\n" + str(module_strname) + "." + str(class_strname) + " might be an invalid class name at " +  str(class_strname) + "\n1"
+                raise Exception("AttributeError: " + str(err) + str(error))
+
             # Set the external auth handler.
             self.session.auth = external_requests_auth_class(**auth_kwargs)
 

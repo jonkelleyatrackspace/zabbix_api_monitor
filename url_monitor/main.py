@@ -44,18 +44,17 @@ def check(testSet,configinstance,logger):
     try:
         uri = testSet['data']['uri']
     except KeyError, err:
-        # We're missing one of these two keys aren't we?
-        print("Error: Missing " + str(err) + " in config under testElement, check cannot run.")
-        return 1
+        # We're missing the uri aren't we?
+        error = "\n\nError: Missing " + str(err) + " under testSet item "+ str(testSet['key']) +", check cannot run.\n1"
+        raise Exception("KeyError: " + str(err) + str(error))
     try:
         response = webinstance.run(config, uri, verify=True, expected_http_status=str(
             testSet['data']['ok_http_code']), identity_provider=testSet['data']['identity_provider'])
     except KeyError, err:
-        # We're missing one of these two keys aren't we?
-        print("Error: Missing " + str(err) + " in config, check cannot run.\n"
-            + "If you don't need auth set identity_provider: none\n"
-            + "If you don't know `ok_http_code: 200,201` is a safe bet.")
-        return 1
+        # We're missing ok code arent we?
+        error = "\n\nError: Missing " + str(err) + " under testSet item "+ str(testSet['key']) + "\n" \
+            + "If you don't know `ok_http_code: 200,201,202,203,204,205,206,301,302,304` will cover most services.\n1"
+        raise Exception("KeyError: " + str(err) + str(error))
     except requests.exceptions.RequestException as e:
         logging.error("Error: Requests exception " + str(e))
         return 1
@@ -66,9 +65,9 @@ def check(testSet,configinstance,logger):
         try:
             datatypes = element['datatype'].split(',')
         except KeyError, err:
-            print("Error: Missing " + str(err) + " in config under testSet: testElements, check cannot run.")
-            print("Most elements are dynamically generated but this one is required.")
-            print("You can generate 1 or a comma seperated list of datatypes")
+            logging.error("Error: Missing " + str(err) + " in config under testSet: testElements, check cannot run.")
+            logging.error("Most elements are dynamically generated but this one is required.")
+            logging.error("You can generate 1 or a comma seperated list of datatypes")
             return 1
         # We need to make a metric for each explicit data type
         # (string,int,count)
@@ -78,8 +77,8 @@ def check(testSet,configinstance,logger):
                     'data']['response_type'], element)
             except KeyError, err:
                 # We're missing one of these two keys aren't we?
-                print("Error: Missing " + str(err) + " in config under testElement, check cannot run.")
-                print("This must be response_type: json.")
+                logging.error("Error: Missing " + str(err) + " in config under testElement, check cannot run.")
+                logging.error("This must be response_type: json.")
                 return 1
             # Append to the element things like response, statuscode,
             # and the request url, I'd like to monitor status codes but don't
@@ -93,8 +92,8 @@ def check(testSet,configinstance,logger):
             try:
                 element['key']
             except KeyError, err:
-                print("Error: Missing " + str(err) + " in config under testSet: testElements, check cannot run.")
-                print("Most elements are dynamically generated but this one is required.")
+                logging.error("Error: Missing " + str(err) + " in config under testSet: testElements, check cannot run.")
+                logging.error("Most elements are dynamically generated but this one is required.")
                 return 1
             logging.debug(str(element['key']) + ": " +
                   str(element['request_response']))
@@ -121,7 +120,7 @@ def discover(args,configinstance,logger):
     config = configinstance.load()
 
     if not args.datatype:
-        print("You must provide a datatype with the --datatype or -t option.\n\n" +
+        logging.error("\nYou must provide a datatype with the --datatype or -t option.\n\n" +
               "Datatypes are found in your yaml config under\n testSet->testTitle-" +
               ">testElements->datatype \n\nAvailable types in config:\n  %s " % discover_helper(configinstance))
         sys.exit(1)
@@ -131,12 +130,8 @@ def discover(args,configinstance,logger):
 
     for testSet in config['checks']:
         checkname = testSet['key']
-        try:
-            uri = testSet['data']['uri']
-        except KeyError, err:
-            print("Error: Missing " + str(err) + " in config under testSet, check cannot run.")
-            print("1")
-            exit(1)
+        
+        uri = testSet['data']['uri']
 
         for element in testSet['data']['testElements']:  # For every test element
             datatypes = element['datatype'].split(',')
@@ -174,9 +169,24 @@ def discover_helper(configinstance):
     possible_datatypes = []
     for testSet in config['checks']:
         checkname = testSet['key']
-        uri = testSet['data']['uri']
+        try:
+            uri = testSet['data']['uri']
+        except KeyError, err:
+            error = "\n\nError: Missing " + str(err) + " under testSet item "+ str(testSet['key']) +", discover cannot run.\n1"
+            raise Exception("KeyError: " + str(err) + str(error))
+
+        try:
+            testSet['data']['testElements']
+        except KeyError, err:
+            error = "\n\nError: Missing " + str(err) + " under testSet item "+ str(testSet['key']) +", discover cannot run.\n1"
+            raise Exception("KeyError: " + str(err) + str(error))
+
         for element in testSet['data']['testElements']:  # For every test element
-            datatypes = element['datatype'].split(',')
+            try:
+                datatypes = element['datatype'].split(',')
+            except KeyError, err:
+                error = "\n\nError: Missing " + str(err) + " under testElements in "+ str(testSet['key']) +", discover cannot run.\n1"
+                raise Exception("KeyError: " + str(err) + str(error))
             for datatype in datatypes:
                 possible_datatypes.append(datatype)
 
@@ -192,16 +202,16 @@ def main(arguements=None):
             arguements = sys.argv[1:]
             progname = sys.argv[0]
         except IndexError:
-            print("Invalid options. Use --help for more information.")
-            print("\n"+returnEpilog())
+            print(returnEpilog() + "\n")
+            logging.error("Invalid options. Use --help for more information.")
             sys.exit(1)
     else:  # entry
         try:
             arguements = arguements[1:]
             progname = arguements[0]
         except IndexError:
-            print("Invalid options. Use --help for more information.")
-            print("\n"+returnEpilog())
+            print(returnEpilog() + "\n")
+            logging.error("Invalid options. Use --help for more information.")
             sys.exit(1)
 
     """Program entry point.
