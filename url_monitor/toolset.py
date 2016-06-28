@@ -105,15 +105,23 @@ class WebCaller(object):
             url, headers=self.session_headers, verify=verify
         )
 
-        # Turns comma seperated string from config to a list.
-        expected_codes = expected_http_status.split(',')
+        # Turns comma seperated string from config to a list, then lower it
+        expected_codes = [c.lower() for c in expected_http_status.split(',')]
 
         # Cast response code into a list
         resp_code = str(request.status_code).split()
 
+        if 'any'.lower() in expected_codes:
+            # Allow any HTTP code ranges within RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1
+            expected_codes.remove('any')
+            expected_codes = expected_codes + range(100,103) \
+                           + range(200,226) + range(300,308) \
+                           + range(400,451) + range(500,510)
+            expected_codes = map(str,expected_codes)
+
+        # filter returns empty if code not found, returns found expected_codes if they are found.
         valid_response_code = filter(lambda item: any(
             x in item for x in resp_code), expected_codes)
-        # ^ filter returns empty if code not found, returns found expected_codes if they are found.
 
         if not valid_response_code:
             raise requests.exceptions.HTTPError(

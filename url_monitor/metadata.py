@@ -12,7 +12,7 @@ Rackspace Cloud Monitoring, collectd, etc...
 package = 'url_monitor'
 project = "URL Monitor Module"
 project_no_spaces = project.replace(' ', '')
-version = '0.8.7'
+version = '0.8.9'
 description = 'A zabbix plugin to perform URL endpoint monitoring for JSON and XML REST APIs, supporting multiple http auth mechinisms'
 authors = ['Jon Kelley', 'Nick Bales']
 authors_string = ', '.join(authors)
@@ -21,4 +21,4 @@ emails = ['jon.kelley@rackspace.com',
 license = 'ASLv2'
 company = "Rackspace, Inc."
 copyright = '2016 ' + company
-url = 'https://github.rackspace.com/cloud-integration-ops'
+url = 'https://github.com/jonkelleyatrackspace/zabbix_url_monitor'

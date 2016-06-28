@@ -184,8 +184,8 @@ This can be a built-in `requests.auth` provider or an external python module you
 > 
 > **`identity_provider`** is a provider that you have defined in the above **identity provieers** section of this README. **NOTE** You can use `none` as a provider and no authentication will be made for requests.
 > 
-> **`ok_http_code`** is one, or a comme delimeted list of http code(s) that are acceptable for this check to work. The check will fail with exception output which can be caught by Zabbix as failing checks.
-> 
+> **`ok_http_code`** is a single value, or a comma delimeted list of http code(s) that are acceptable for this check to work. The check will fail with exception output which can be caught by Zabbix as failing checks. **NOTE** You can use `any` value or in a list and valid codes from RFC 2616 will be included.
+
 > **`response_type`** is always `json` until we add a different module for xml.
 
 #####Test Elements
