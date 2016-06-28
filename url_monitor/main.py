@@ -197,22 +197,17 @@ def entry_point():
     raise SystemExit(main(sys.argv))
 
 def main(arguements=None):
-    if arguements is None:  # __name__=__main__
-        try:
+    try:
+        if arguements is None:  # __name__=__main__
             arguements = sys.argv[1:]
             progname = sys.argv[0]
-        except IndexError:
-            print(returnEpilog() + "\n")
-            logging.error("Invalid options. Use --help for more information.")
-            sys.exit(1)
-    else:  # entry
-        try:
+        else: # module entry
             arguements = arguements[1:]
             progname = arguements[0]
-        except IndexError:
-            print(returnEpilog() + "\n")
-            logging.error("Invalid options. Use --help for more information.")
-            sys.exit(1)
+    except IndexError:
+        print(returnEpilog() + "\n")
+        logging.error("Invalid options. Use --help for more information.")
+        sys.exit(1)
 
     """Program entry point.
 
