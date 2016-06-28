@@ -40,7 +40,6 @@ def returnEpilog():
 def check(testSet,configinstance,logger):
     """ Perform the checks when called upon by argparse in main() """
     config = configinstance.load()
-    configinstance.load_zabbix()
     webinstance = toolset.WebCaller(logger)
 
     # Make a request and check a resource
@@ -224,6 +223,7 @@ def main(arguements=None):
 
     configinstance = ConfigObject()
     configinstance.load_yaml_file(args.config)
+    configinstance.preFlight()
     config = configinstance.load()
     logger = logging.getLogger(metadata.package)
     args.loglevel = configinstance.get_log_level(args.loglevel)

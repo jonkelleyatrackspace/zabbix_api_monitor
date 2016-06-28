@@ -119,7 +119,7 @@ class ConfigObject(object):
         else:
             return logging.ERROR
 
-    def load_zabbix(self):
+    def preFlight(self):
         """ Trys loading all the config objects for zabbix conf. This can be expanded to do
             all syntax checking in this config class, instead of in the program logic as it is
             mostly right now. """
